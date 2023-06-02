@@ -8,42 +8,17 @@ enum Shapetype {
     Circle
 };
 class Shape {
-    private:
-        int width, height, length, radius;
+ 
     public:    
         virtual std::string getShape()=0;
         virtual void setshape(std::vector<int> a)=0;
-        int getWidth()
-        {
-            return this->width;
-        }
-        void setWidth(int w)
-        {
-            this->width = w;
-        }
-        int getHeight()
-        {
-            return this->height;
-        }
-        void setHeight(int h)
-        {
-            this->height = h;
-        }
-        int getLength()
-        {
-            return this->length;
-        }
-        void setLength(int l)
-        {
-            this->length = l;
-        }
-        int getRadius()
-        {
-            return this->radius;
-        }
-        void setRadius(int r)
-        {
-            this->radius = r;
-        }
+        /*virtual int getWidth()=0;
+        virtual void setWidth(int w)=0;
+        virtual int getHeight()=0;
+        virtual void setHeight(int h)=0;
+        virtual int getLength()=0;
+        virtual void setLength(int l)=0;
+        virtual int getRadius()=0;
+        virtual void setRadius(int r)=0;*/
 };
 #endif

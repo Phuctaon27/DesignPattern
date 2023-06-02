@@ -7,7 +7,7 @@
 class Shapefactory2d: public Abstractfactory {
 public:
 
-    Shape* getShape(Shapetype type);
+    Shape* getShape(Shapetype type)override;
     
 };
 #endif
