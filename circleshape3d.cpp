@@ -18,6 +18,12 @@ std::string Circleshape3d::getShape(){
 
 void Circleshape3d::setshape(std::vector<int> a)
 {
-   setRadius(a[0]);
-
+    parameter.clear();
+    parameter = a;
 }
+
+std::vector<int> Circleshape3d::getparameter()
+{
+    return this->parameter;
+}
+

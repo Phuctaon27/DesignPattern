@@ -18,8 +18,12 @@ std::string  Rectangleshape3d::getShape(){
 
 void Rectangleshape3d::setshape(std::vector<int> a)
 {
-    this->Width = a[0];
-    this->Width = a[1];
-    this->Width = a[2];
+    parameter.clear();
+    parameter = a;
+}
+
+std::vector<int> Rectangleshape3d::getparameter()
+{
+    return this->parameter;
 }
 

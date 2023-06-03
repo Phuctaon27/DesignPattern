@@ -18,6 +18,11 @@ std::string  Rectangleshape2d::getShape(){
 
 void Rectangleshape2d::setshape(std::vector<int> a)
 {
-    setLength(a[0]);
-    setWidth(a[1]);
+    parameter.clear();
+    parameter = a;
+}
+
+std::vector<int> Rectangleshape2d::getparameter()
+{
+    return this->parameter;
 }

@@ -3,6 +3,18 @@
 #include "circleshape2d.h"
 #include "shapefactory2d.h"
 
+Shapefactory2d* Shapefactory2d::instance = nullptr;
+
+Shapefactory2d::Shapefactory2d(){}
+
+Shapefactory2d* Shapefactory2d::GetInstance()
+{
+    if(instance ==nullptr){
+        instance = new Shapefactory2d();
+    }
+    return instance;
+}
+
 Shape* Shapefactory2d::getShape(Shapetype type) {
 
   Shape *shape = NULL;
@@ -10,11 +22,11 @@ Shape* Shapefactory2d::getShape(Shapetype type) {
   switch (type)
   {
   case Rectangle:
-    shape = new Rectangleshape2d();
+    shape = Rectangleshape2d::GetInstance();
     break;
   
   case Circle:
-    shape = new Circleshape2d();
+    shape = Circleshape2d::GetInstance();
     break;
     
   default:

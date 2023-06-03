@@ -4,92 +4,96 @@ void System::addshape(Shapetype &shape,FactoryType &factory,std::vector<int> &pa
 {
     Abstractfactory* absfactory = FactoryMaker::getFactory(factory);
     Shape * a = absfactory->getShape(shape);
+    int index = shapelist.size();
+    para.insert(para.begin(), index);
     a->setshape(para);
-    saveshape(a);
+    saveshape(Actions::Add_Shape, a);
 }
 
-void System::saveshape(Shape *shape)
+void System::saveshape(Actions actions, Shape *shape)
 {
-    
-    vectorshape.push_back(shape);
-    undo.clear();
-    copy(vectorshape.begin(),vectorshape.end(),back_inserter(undo));
-    redo.clear();
-    copy(vectorshape.begin(),vectorshape.end(),back_inserter(redo));
+    ShapeName name;
+    if(shape->getShape() == "2drectangle")
+    {
+        name = ShapeName::rec2D;
+    }
+    else if(shape->getShape() == "3drectangle")
+    {
+        name = ShapeName::rec3D;
+    }
+    else if(shape->getShape() == "2dcircle")
+    {
+        name = ShapeName::cir2D;
+    }
+    else
+    {
+        name = ShapeName::cir3D;
+    }
+    std::pair<ShapeName,vector<int>> shapePair(name,shape->getparameter());
+    pair<Actions,vector<int>> pairobj (actions, shape->getparameter());
+    UndoStack.push(pairobj);
+
 }
 
-std::vector<Shape*> System::shapeparameter()
+std::vector<pair<ShapeName,vector<int>>> System::shapeparameter()
 {
-    return vectorshape;
+    return shapelist;
 }
 
 void System::changeparameter(int number,vector<int> a)
 {
     int i = number -1;
-    //vector<Shape*> temp;
-    undo.clear();
-    copy(vectorshape.begin(),vectorshape.end(),back_inserter(undo));
-    
-    Shape *c;
-    if(vectorshape.at(i)->getShape() == "2drectangle")
+    if(shapelist.at(i).first == ShapeName::rec2D)
     {
-        Abstractfactory* absfactory = FactoryMaker::getFactory(FactoryType::shape2D);
-        c = absfactory->getShape(Shapetype::Rectangle);
-
-        c->setLength(a[0]);
-        c->setWidth(a[1]); 
+        shapelist.at(i).second.clear();
+        shapelist.at(i).second = a;
     }
-    else if(vectorshape.at(i)->getShape() == "3drectangle")
+    else if(shapelist.at(i).first == ShapeName::rec3D)
     {
-        Abstractfactory* absfactory = FactoryMaker::getFactory(FactoryType::shape3D);
-        c = absfactory->getShape(Shapetype::Rectangle);
-        c->setLength(a[0]);
-        c->setHeight(a[2]);
-        c->setWidth(a[1]); 
+        shapelist.at(i).second.clear();
+        shapelist.at(i).second = a;
     }
-    else if(vectorshape.at(i)->getShape() == "2dcircle")
+    else if(shapelist.at(i).first == ShapeName::cir2D)
     {
-        Abstractfactory* absfactory = FactoryMaker::getFactory(FactoryType::shape2D);
-        c = absfactory->getShape(Shapetype::Circle);
-        c->setRadius(a[0]); 
+        shapelist.at(i).second.clear();
+        shapelist.at(i).second = a;
     }
     else
     {
-        Abstractfactory* absfactory = FactoryMaker::getFactory(FactoryType::shape3D);
-        c = absfactory->getShape(Shapetype::Circle);
-        c->setRadius(a[0]); 
+        shapelist.at(i).second.clear();
+        shapelist.at(i).second = a;
     }
-
-    //vectorshape.push_back(c);
-    vectorshape.erase(vectorshape.begin()+i);
-    vectorshape.insert(vectorshape.begin()+(i),c);
-
-    redo.clear();
-    copy(vectorshape.begin(),vectorshape.end(),back_inserter(redo));
-
-    /*cout << "end change" << endl;
-    for(auto val:undo)
-    {
-        cout << val->getRadius() << " ";
-    }
-    cout << "/n____________"<<endl;
-    for(auto val:vectorshape)
-    {
-        cout << val->getRadius() << " ";
-    }
-    cout << "/n____________"<<endl;
-    for(auto val:redo)
-    {
-        cout << val->getRadius() << " ";
-    }
-    cout << "/n____________"<<endl;*/
+    pair<Actions,vector<int>> pairobj (Actions::Modify_Shape, a);
+    UndoStack.push(pairobj);
 }
 
 
 void System::changeToUndo()
 {   
-    vectorshape.clear();
-    copy(undo.begin(),undo.end(),back_inserter(vectorshape));
+    if(UndoStack.empty())
+    {
+        std::cout << "Nothing to do" << std::endl;
+        return;
+    }
+    pair<Actions,vector<int>> pairobj = UndoStack.top();
+    UndoStack.pop();
+    if(pairobj.first == Actions::Add_Shape)
+    {
+        int a = pairobj.second[0];
+        shapelist.erase(shapelist.begin()+a);
+    }
+    else if(pairobj.first == Actions::Modify_Shape)
+    {
+        int i = pairobj.second.at(0);
+        shapelist.at(i).second = pairobj.second;
+    }
+    else
+    {
+        int i = pairobj.second.at(0);
+        shapelist[i].first = pairobj.first;
+        shapelist[i].second = pairobj.second;
+    }
+    
 }
 
 void System::changeToRedo()
@@ -101,7 +105,8 @@ void System::changeToRedo()
 void System::deleteshape(int number)
 {
     int i = number -1;
-    vectorshape.erase(vectorshape.begin()+i);
-    redo.clear();
-    copy(vectorshape.begin(),vectorshape.end(),back_inserter(redo));
+    vector<int> temp =  shapelist.at(i).second;
+    pair<Actions,vector<int>> pairobj (Actions::Modify_Shape, temp);
+    UndoStack.push(pairobj);
+    shapelist.erase(shapelist.begin()+i);
 }

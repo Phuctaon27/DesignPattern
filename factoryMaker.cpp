@@ -8,7 +8,7 @@ Abstractfactory* FactoryMaker::getFactory(FactoryType type) {
   switch (type)
   {
   case shape2D:
-    factory = new Shapefactory2d();
+    factory = Shapefactory2d::GetInstance();
     break;
 
   case shape3D:

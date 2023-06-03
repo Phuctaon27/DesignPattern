@@ -75,6 +75,11 @@ void Userinterface::addshape()
         case 2:
             type = shape3D;
             break;
+        
+        default:
+            std::cout << "Please choose exiting number!!" << std::endl;
+            show();
+            break;
     }
     
     std::cout << "Shape ? \n"
@@ -91,6 +96,10 @@ void Userinterface::addshape()
         
         case 2:
             shape = Circle;
+            break;
+        default:
+            std::cout << "Please choose exiting number!!" << std::endl;
+            show();
             break;
     }
 
@@ -138,26 +147,27 @@ void Userinterface::listshape()
         return;
     }
     for(auto val:system.shapeparameter())
-    {   
+    {   ShapeName name = val.first;
         std::cout << "===============================" << std::endl;
         std::cout << "Shape number: " << i << std::endl;
-        std::cout << "Name: " << val->getShape() << std::endl;
-        if(val->getShape() == "2drectangle")
+        if(name == ShapeName::rec2D)
         {
-            std::cout << "Length: " << val->getLength() << std::endl;
-            std::cout << "Widht: " << val->getWidth() << std::endl;
+            std::cout << "Name: 2drectangle" << std::endl;
+            std::cout << "Length: " << val.second[1] << std::endl;
+            std::cout << "Widht: " << val.second[2] << std::endl;
             std::cout << "===============================" << std::endl;
         }
-        else if(val->getShape() == "3drectangle")
+        else if(name == ShapeName::rec3D)
         {
-            std::cout << "Length: " << val->getLength() << std::endl;
-            std::cout << "Widht: " << val->getWidth() << std::endl;
-            std::cout << "Heigth: " << val->getHeight() << std::endl;
+            std::cout << "Name: 3drectangle" << std::endl;
+            std::cout << "Length: " << val.second[1] << std::endl;
+            std::cout << "Widht: " << val.second[2] << std::endl;
+            std::cout << "Heigth: " << val.second[3] << std::endl;
             std::cout << "===============================" << std::endl;
         }
         else
         {
-            std::cout << "Radius: " << val->getRadius() << std::endl;
+            std::cout << "Radius: " << val.second[1] << std::endl;
             std::cout << "===============================" << std::endl;
         }
         i++;
@@ -173,16 +183,17 @@ void Userinterface::modifyshape()
     std::cout << "Enter shape number to modify parameter: \n";
     std::cin >> shapenumber;
     
-    if(system.shapeparameter()[shapenumber-1]->getShape() == "2drectangle")
+    if(system.shapeparameter()[shapenumber-1].first == ShapeName::rec2D)
     {
         std::cout << "Enter new parameter \n"
                   << "Length: ";
         std::cin >> l;
         std::cout << "Width: ";
         std::cin >> w;
+        a.push_back(shapenumber-1);
         a.push_back(l); a.push_back(w);
     }
-    else if(system.shapeparameter()[shapenumber-1]->getShape() == "3drectangle")
+    else if(system.shapeparameter()[shapenumber-1].first == ShapeName::rec3D)
     {
         std::cout << "Enter new parameter \n"
                   << "Length: ";
@@ -191,6 +202,7 @@ void Userinterface::modifyshape()
         std::cin >> w;
         std::cout << "Heigth: ";
         std::cin >> h;
+        a.push_back(shapenumber-1);
         a.push_back(l); a.push_back(w); a.push_back(h);
     }
     else
@@ -198,6 +210,7 @@ void Userinterface::modifyshape()
         std::cout << "Enter new parameter \n"
                   << "Radius: ";
         std::cin >> r;
+        a.push_back(shapenumber-1);
         a.push_back(r);
     }
     system.changeparameter(shapenumber,a);
